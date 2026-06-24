@@ -3,7 +3,7 @@
  * to indicate the app is connected to Supabase in real-time.
  */
 import React, { useState, useEffect } from 'react';
-import { Wifi, WifiOff, RefreshCcw } from 'lucide-react';
+import { WifiOff, RefreshCcw } from 'lucide-react';
 
 interface LiveIndicatorProps {
   lastUpdated: Date | null;
