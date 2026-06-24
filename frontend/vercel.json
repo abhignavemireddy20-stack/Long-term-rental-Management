@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://rental-management-api.vercel.app/api/:path*"
+      "destination": "https://backend-alpha-seven-89.vercel.app/api/:path*"
     },
     {
       "source": "/(.*)",
