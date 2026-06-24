@@ -65,11 +65,16 @@ app.get('*', (req, res) => {
 // Error handling middleware (must be registered last)
 app.use(errorHandler);
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`===================================================`);
-  console.log(` SD DIGITALS CRM SERVER STARTED SUCCESSFULLY      `);
-  console.log(` Port: http://localhost:${PORT}                    `);
-  console.log(` Mode: ${process.env.NODE_ENV || 'development'}    `);
-  console.log(`===================================================`);
-});
+// Start Server locally if not running on Vercel
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    console.log(`===================================================`);
+    console.log(` SD DIGITALS CRM SERVER STARTED SUCCESSFULLY      `);
+    console.log(` Port: http://localhost:${PORT}                    `);
+    console.log(` Mode: ${process.env.NODE_ENV || 'development'}    `);
+    console.log(`===================================================`);
+  });
+}
+
+// Export app for serverless environment
+export default app;
