@@ -1,0 +1,84 @@
+// This is your production Prisma schema file for PostgreSQL (e.g., Supabase)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(uuid())
+  name      String
+  email     String     @unique
+  password  String
+  role      String     // "Admin" or "Staff"
+  createdAt DateTime   @default(now())
+  auditLogs AuditLog[]
+}
+
+model Client {
+  id                     String                 @id @default(uuid())
+  clientName            String
+  companyName           String?
+  clientType             String                 // "Production House", "Wedding Photographer", etc.
+  phone                  String
+  email                  String
+  address                String?
+  preferredCommunication String                 // Comma-separated or JSON list of preferences
+  contractStartDate      DateTime
+  renewalDate            DateTime
+  status                 String                 // "Active", "Expiring Soon", "Expired", "Inactive"
+  notes                  String?
+  equipmentPreferences   EquipmentPreference[]
+  rentalHistory          RentalHistory[]
+  communicationLogs      CommunicationLog[]
+  renewals               Renewal[]
+}
+
+model EquipmentPreference {
+  id            String @id @default(uuid())
+  clientId      String
+  client        Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  equipmentName String
+  category      String // "Cameras", "Lenses", "Lighting", "Audio Equipment"
+}
+
+model RentalHistory {
+  id            String   @id @default(uuid())
+  clientId      String
+  client        Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  equipmentName String
+  rentalStart   DateTime
+  rentalEnd     DateTime
+  amount        Float
+  status        String   // "Completed", "Active", "Scheduled"
+}
+
+model CommunicationLog {
+  id                String   @id @default(uuid())
+  clientId          String
+  client            Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  communicationType String   // "Call", "Email", "WhatsApp"
+  communicationDate DateTime
+  remarks           String
+}
+
+model Renewal {
+  id            String   @id @default(uuid())
+  clientId      String
+  client        Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  renewalDate   DateTime
+  alertStatus   String   // "Green", "Yellow", "Orange", "Red"
+  renewalStatus String   // "Pending", "Resolved", "Archived"
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String
+  timestamp DateTime @default(now())
+}
